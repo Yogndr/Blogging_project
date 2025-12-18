@@ -1,0 +1,27 @@
+<html>
+    <head>
+        <title>Signup form </title>
+        <%- include('./partials/style.ejs')%>
+    </head>
+    <body>
+        <div class="wrapper">
+        <h2>Signup page</h2>
+        <form method="POST" action="http://localhost:3000/register" autocomplete="off">
+            <input type="text" name="name" placeholder="Enter your name" />
+            <br><br>
+            <input type="email" name="email" placeholder="Enter your email" autocomplete="off"/>
+            <br><br>
+            <input type="password" name="password" placeholder="Enter your password" autocomplete="new-password"/>
+            <br>
+            <br>
+            <input type="submit" value="submit"/>
+            <% if(message) {%>
+                <p><%= message %></p>
+                <% } %>
+        </form>
+
+        <hr>
+        <a href="/login">Login</a>
+        </div>
+    </body>
+</html>

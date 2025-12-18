@@ -1,0 +1,89 @@
+const bcrypt=require('bcrypt')
+const base64=require('base-64');
+const Users = require('../models/users');
+
+const signup=(req,res)=>{
+    res.render('signup',{message:null})
+}
+
+const loginPage=(req,res)=>{
+    res.render('login',{message:null});
+}
+
+const register=async(req,res)=>{
+    try{
+         const{name,email,password}=req.body;
+         const existingUser=await Users.findOne({email});
+         if(existingUser){
+            // return res.status(400).json({message:"User already registered with this mail id. Directly login or try with diff mail"})
+            return res.render('signup',{message:"User already registered with this mail id. please login"})
+         }
+
+         const hashedpassword=await bcrypt.hash(password,10)
+
+         const newUser=new Users({
+            name,email,password:hashedpassword
+         })
+         newUser.save()
+         .then(response=> 
+            {res.render('login',{message:"User created Successfuly"})})
+         .catch(err=>
+            {res.render('signup',{message:"User cannot be created"})})
+
+    }
+   catch(err){
+    
+//    return res.status(500).json({message:" User cannot be created due to server issue. Please contact support"})
+res.render('signup',{message:"User cannot be created due to server issue. Please try later"})
+   }
+}
+
+const login=async(req,res)=>{
+    try{
+        const{email,password}=req.body;
+        const existingUser=await Users.findOne({email})
+        if(!existingUser){
+            return res.render('login',{message:"User not registred with Us. Please signup first"})
+        }
+        const passwordMatch=await bcrypt.compare(password,existingUser.password);
+        if(passwordMatch){
+            req.session.userId=existingUser._id
+            res.redirect('/')
+        }
+        else{
+            res.render('login',{message:"Invalid password"})
+        }
+
+    }
+    catch(err){
+
+        res.render('login',{message:"User cant be created due to server issue. Please contact support"})
+
+    }
+}
+
+const allUsers=(req,res)=>{
+    Users.find()
+    .then(response=>{
+        res.json(response)
+
+    })
+    .catch(err=>{
+        res.json(err)
+    })
+
+    
+
+}
+
+const logout=(req,res)=>{
+    req.session.destroy(()=>{
+        res.redirect('/login')
+    })
+    
+
+}
+
+module.exports={
+    signup,loginPage,register,login,allUsers,logout
+}

@@ -1,0 +1,82 @@
+<!-- <html>
+    <head>
+        <title>Home </title>
+         <%- include('./partials/style.ejs')%>
+    </head>
+    <body>
+         <%- include('./partials/topbar.ejs')%>
+
+         <div class="sort-selection">
+            <label for="sort">Sort by:</label>
+            <select id="sort" onchange="window.location.href='/?pages=1&sort='+this.value">
+                <option value="title" <% if(sort==='title'){ %>selected <%}%>>Title</option>
+                <option value="createdAt" <% if(sort==='createdAt'){ %>selected <%}%>>Date</option>
+            </select>
+         </div>
+
+          <%
+         if(blogData.length>0){
+            for(let i=0;i<blogData.length;i++){
+         
+         %>
+         <div class="blog-card">
+            <div class="blog-title"><%= blogData[i].title %></div>
+            <div class="blog-body"><%= blogData[i].body %></div>
+            <div class="blog-body"><%= blogData[i]._id %></div>
+            
+         </div>
+         <% } } %>
+
+         <div class="pagenation">
+            <% for(let i=1;i<=pages;i++) { %>
+                <a href="/?page=<%=i %>" <% if(i==current){%> class="activePage"<%}  %>>
+                    <%=i %>
+                </a>
+
+                <% } %>
+
+
+         </div>
+        
+    </body>
+</html> -->
+
+<html>
+<head>
+    <title>Home</title>
+    <%- include('./partials/style.ejs') %>
+</head>
+<body>
+
+<%- include('./partials/topbar.ejs') %>
+
+<% const selectedSort = typeof sort !== 'undefined' ? sort : 'title'; %>
+
+<div class="sort-selection">
+    <label for="sort">Sort by:</label>
+    <select id="sort" onchange="window.location.href='/?page=1&sort='+this.value">
+        <option value="title" <%= selectedSort === 'title' ? 'selected' : '' %>>Title</option>
+        <option value="createdAt" <%= selectedSort === 'createdAt' ? 'selected' : '' %>>Date</option>
+    </select>
+</div>
+
+<% if (blogData && blogData.length > 0) { 
+    for (let i = 0; i < blogData.length; i++) { %>
+
+    <div class="blog-card">
+        <div class="blog-title"><%= blogData[i].title %></div>
+        <div class="blog-body"><%= blogData[i].body %></div>
+    </div>
+
+<% } } %>
+
+<div class="pagenation">
+    <% for (let i = 1; i <= pages; i++) { %>
+        <a href="/?page=<%= i %>" <%= i === current ? 'class="activePage"' : '' %>>
+            <%= i %>
+        </a>
+    <% } %>
+</div>
+
+</body>
+</html>
